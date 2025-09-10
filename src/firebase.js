@@ -5,13 +5,13 @@ import { getStorage } from "firebase/storage";
 import { getMessaging } from "firebase/messaging";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyA_3YGUhreHbPhmghGDKczL4T77pcRmjNo",
-    authDomain: "fir-5104f.firebaseapp.com",
-    databaseURL: "https://fir-5104f-default-rtdb.firebaseio.com",
-    projectId: "fir-5104f",
-    storageBucket: "fir-5104f.firebasestorage.app",
-    messagingSenderId: "871072338128",
-    appId: "1:871072338128:web:3f1ead80651f56d5b3ced5"
+  apiKey: "AIzaSyC4WWkBAMUmyUmPhNZ3c-9l-EoR-QwnAK0",
+  authDomain: "swarnbhoomi-887d1.firebaseapp.com",
+  projectId: "swarnbhoomi-887d1",
+  storageBucket: "swarnbhoomi-887d1.firebasestorage.app",
+  messagingSenderId: "139824189881",
+  appId: "1:139824189881:web:d5e8a075bbd144e48e2668",
+  measurementId: "G-QWF3PND3W2"
 };
 
 // Initialize Firebase

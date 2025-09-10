@@ -1,27 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "./firebase";
 
-// Layout
-import Layout from "./components/Layout";
-
-// Public Pages
-import LandingPage from "./pages/Landing";
-import AuthPage from "./pages/AuthPage";
-import Registration from "./pages/Registration";
-
-// Dashboard Pages
+// Farmer Pages
 import Dashboard from "./pages/Dashboard";
 import MyCrop from "./pages/MyCrop";
 import VoiceBot from "./pages/VoiceBot";
 import Inventory from "./pages/Inventory";
 import Weather from "./pages/Weather";
-import Profile from "./pages/ProfilePage";
-import Advisory from "./pages/AdvisoryPage";
+import ProfilePage from "./pages/ProfilePage";
+import AdvisoryPage from "./pages/AdvisoryPage";
 import AgroRentTab from "./pages/AgroRentTab";
 import SoilAdvisory from "./pages/SoilAdvisory";
-import Community from "./pages/CommunityPage";
+import CommunityPage from "./pages/CommunityPage";
 import Waste from "./pages/Waste";
-import FPO from "./pages/FpoPage";
+import FpoPage from "./pages/FpoPage";
 import Learning from "./pages/Learning";
 import TopicDetail from "./pages/TopicDetail";
 import Ndvi from "./pages/Ndvi";
@@ -29,8 +24,6 @@ import MandiPage from "./pages/MandiPage";
 import CommoditySelection from "./pages/CommoditySelection";
 import CommodityPrices from "./pages/CommodityPrices";
 import FarmingAlerts from "./pages/FarmingAlerts";
-
-// Schemes Section
 import SchemesPage from "./pages/SchemesPage";
 import SchemesLayout from "./pages/SchemesLayout";
 import Agriculture from "./pages/schemes/Agriculture";
@@ -40,69 +33,126 @@ import FarmMachine from "./pages/schemes/FarmMachine";
 import Horticulture from "./pages/schemes/Horticulture";
 import Others from "./pages/schemes/Others";
 
+// Officer Pages
+import OfficerDashboard from "./pages/officer/OfficerDashboard";
+
+// Admin Pages
+import AdminDashboard from "./pages/admin/AdminDashboard";
+
+// Public
+import LandingPage from "./pages/Landing";
+import AuthPage from "./pages/AuthPage";
+import Registration from "./pages/Registration";
+
+import Layout from "./components/Layout";
+
 const App = () => {
   const [user, setUser] = useState(null);
+  const [role, setRole] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const location = useLocation();
 
   useEffect(() => {
-    // Check if a user is stored in localStorage
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+        if (userDoc.exists()) {
+          setUser(currentUser);
+          setRole(userDoc.data().role);
+        }
+      } else {
+        setUser(null);
+        setRole(null);
+      }
+      setLoading(false);
+    });
+    return () => unsubscribe();
   }, []);
 
+  const getDashboard = () => {
+    switch (role) {
+      case "farmer":
+        return <Layout role="farmer"><Dashboard /></Layout>;
+      case "officer":
+        return <Layout role="officer"><OfficerDashboard /></Layout>;
+      case "admin":
+        return <Layout role="admin"><AdminDashboard /></Layout>;
+      default:
+        return <Navigate to="/auth" />;
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+
   return (
-    <Router>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/auth" element={<AuthPage setUser={setUser} />} />
-        <Route path="/register" element={<Registration />} />
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/auth" element={<AuthPage />} />
+      <Route path="/register" element={<Registration />} />
 
-        {/* Protected Routes */}
-        <Route
-          path="/dashboard/*"
-          element={user ? <Layout /> : <Navigate to="/auth" />}
-        >
-          <Route index element={<Dashboard />} />
+      {/* Protected Dashboard */}
+      <Route
+        path="/dashboard/*"
+        element={
+          user && role
+            ? getDashboard()
+            : <Navigate to="/auth" state={{ from: location }} />
+        }
+      >
+        {/* Farmer Routes */}
+        {role === "farmer" && (
+          <>
+            <Route index element={<Dashboard />} />
+            <Route path="advisoryPage" element={<AdvisoryPage />} />
+            <Route path="SoilAdvisory" element={<SoilAdvisory />} />
+            <Route path="communityPage" element={<CommunityPage />} />
+            <Route path="cropGuide" element={<MyCrop />} />
+            <Route path="voiceBot" element={<VoiceBot />} />
+            <Route path="waste" element={<Waste />} />
+            <Route path="inventory" element={<Inventory />} />
+            <Route path="fpoPage" element={<FpoPage />} />
+            <Route path="profilePage" element={<ProfilePage />} />
+            <Route path="Ndvi" element={<Ndvi />} />
+            <Route path="weather" element={<Weather />} />
+            <Route path="agroRentTab" element={<AgroRentTab />} />
+            <Route path="mandiPage" element={<MandiPage />} />
+            <Route path="farmingAlerts" element={<FarmingAlerts />} />
+            <Route path="learningPage" element={<Learning />} />
+            <Route path="learning/:id" element={<TopicDetail />} />
+            <Route path="commoditySelection" element={<CommoditySelection />} />
+            <Route path="commodity/:name" element={<CommodityPrices />} />
+            <Route path="schemes" element={<SchemesLayout />}>
+              <Route index element={<SchemesPage />} />
+              <Route path="agriculture" element={<Agriculture />} />
+              <Route path="irrigation" element={<Irrigation />} />
+              <Route path="horticulture" element={<Horticulture />} />
+              <Route path="machines" element={<FarmMachine />} />
+              <Route path="animal" element={<Animal />} />
+              <Route path="others" element={<Others />} />
+            </Route>
+          </>
+        )}
 
-          {/* Feature Pages */}
-          <Route path="advisoryPage" element={<Advisory />} />
-          <Route path="SoilAdvisory" element={<SoilAdvisory />} />
-          <Route path="communityPage" element={<Community />} />
-          <Route path="cropGuide" element={<MyCrop />} />
-          <Route path="voiceBot" element={<VoiceBot />} />
-          <Route path="waste" element={<Waste />} />
-          <Route path="inventory" element={<Inventory />} />
-          <Route path="fpoPage" element={<FPO />} />
-          <Route path="profilePage" element={<Profile />} />
-          <Route path="Ndvi" element={<Ndvi />} />
-          <Route path="weather" element={<Weather />} />
-          <Route path="agroRentTab" element={<AgroRentTab />} />
-          <Route path="mandiPage" element={<MandiPage />} />
-          <Route path="farmingAlerts" element={<FarmingAlerts />} />
+        {/* Officer Routes */}
+        {role === "officer" && (
+          <>
+            <Route index element={<OfficerDashboard />} />
+            {/* Add more officer-specific routes */}
+          </>
+        )}
 
-          {/* Learning Section */}
-          <Route path="learningPage" element={<Learning />} />
-          <Route path="learning/:id" element={<TopicDetail />} />
+        {/* Admin Routes */}
+        {role === "admin" && (
+          <>
+            <Route index element={<AdminDashboard />} />
+            {/* Add more admin-specific routes */}
+          </>
+        )}
+      </Route>
 
-          {/* Commodity Pricing */}
-          <Route path="commoditySelection" element={<CommoditySelection />} />
-          <Route path="commodity/:name" element={<CommodityPrices />} />
-
-          {/* Schemes Section */}
-          <Route path="schemes" element={<SchemesLayout />}>
-            <Route index element={<SchemesPage />} />
-            <Route path="agriculture" element={<Agriculture />} />
-            <Route path="irrigation" element={<Irrigation />} />
-            <Route path="horticulture" element={<Horticulture />} />
-            <Route path="machines" element={<FarmMachine />} />
-            <Route path="animal" element={<Animal />} />
-            <Route path="others" element={<Others />} />
-          </Route>
-        </Route>
-      </Routes>
-    </Router>
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
   );
 };
 

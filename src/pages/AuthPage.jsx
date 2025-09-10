@@ -1,26 +1,38 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { auth, db } from "../firebase.js";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 const AuthPage = ({ setUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
 
-    // Dummy credentials
-    if (email === "test@example.com" && password === "123456") {
-      const dummyUser = { email };
-      localStorage.setItem("user", JSON.stringify(dummyUser));
-      setUser(dummyUser);
+    try {
+      // 1️⃣ Sign in with Firebase Auth
+      const { user } = await signInWithEmailAndPassword(auth, email, password);
+
+      // 2️⃣ Fetch user profile from Firestore
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (!userDoc.exists()) {
+        setError("User profile not found!");
+        return;
+      }
+
+      const userData = userDoc.data();
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      // 3️⃣ Redirect to dashboard
       navigate("/dashboard");
-    } else {
-      setError("Invalid email or password");
+    } catch (err) {
+      setError(err.message);
     }
   };
 
@@ -28,7 +40,7 @@ const AuthPage = ({ setUser }) => {
     <div className="min-h-screen flex items-center justify-center bg-[url('/bg-farm.jpg')] bg-cover bg-center px-4">
       <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg w-full max-w-md p-6 sm:p-8">
         <h2 className="text-2xl sm:text-3xl font-bold text-center text-green-800 mb-6">
-          {t("login")}
+          Login
         </h2>
 
         {error && (
@@ -38,7 +50,7 @@ const AuthPage = ({ setUser }) => {
         <form onSubmit={handleLogin} className="space-y-4">
           <input
             type="email"
-            placeholder={t("email")}
+            placeholder="Email"
             className="w-full p-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -46,7 +58,7 @@ const AuthPage = ({ setUser }) => {
           />
           <input
             type="password"
-            placeholder={t("password")}
+            placeholder="Password"
             className="w-full p-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -56,17 +68,17 @@ const AuthPage = ({ setUser }) => {
             type="submit"
             className="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg text-sm font-semibold"
           >
-            {t("login")}
+            Login
           </button>
         </form>
 
         <p className="mt-6 text-sm text-center text-gray-700">
-          {t("no_account")}{" "}
+          No account?{" "}
           <span
             className="text-green-700 font-semibold cursor-pointer hover:underline"
             onClick={() => navigate("/register")}
           >
-            {t("signup")}
+            Sign Up
           </span>
         </p>
       </div>
