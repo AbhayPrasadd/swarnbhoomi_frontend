@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import axios from "axios";
-import filterData from "../data/mandiData";
+import filterData from "../../data/mandiData";
 
 const MandiPriceFetcher = () => {
   const [states, setStates] = useState([]);

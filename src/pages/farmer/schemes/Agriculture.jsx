@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, ArrowLeft } from "lucide-react";
-import HelpModal from "../../components/HelpModal";
-import { db } from "../../firebase";
+import HelpModal from "../../../components/HelpModal";
+import { db } from "../../../firebase";
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 
 const Agriculture = () => {

@@ -1,12 +1,12 @@
-// src/pages/FarmMachine.jsx
+// src/pages/Horticulture.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, ArrowLeft } from "lucide-react";
-import HelpModal from "../../components/HelpModal";
-import { db } from "../../firebase";
+import HelpModal from "../../../components/HelpModal";
+import { db } from "../../../firebase";
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 
-const FarmMachine = () => {
+const Horticulture = () => {
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedScheme, setSelectedScheme] = useState("");
@@ -15,7 +15,7 @@ const FarmMachine = () => {
   useEffect(() => {
     const fetchSchemes = async () => {
       try {
-        const q = query(collection(db, "schemes"), where("category", "==", "machines"));
+        const q = query(collection(db, "schemes"), where("category", "==", "horticulture"));
         const querySnapshot = await getDocs(q);
         const fetchedSchemes = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setSchemes(fetchedSchemes);
@@ -58,7 +58,7 @@ const FarmMachine = () => {
       </div>
 
       <h1 className="text-3xl font-bold text-green-800 text-center mb-8">
-        🔧 Farm Machinery & Equipment Schemes
+        🪴 Horticulture Schemes
       </h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-6xl mx-auto">
@@ -96,4 +96,4 @@ const FarmMachine = () => {
   );
 };
 
-export default FarmMachine;
+export default Horticulture;

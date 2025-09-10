@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { auth, db } from "../firebase";
+import { auth, db } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import {
   CloudSun,
@@ -12,7 +12,7 @@ import {
   Bot,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import i18n from "../i18n";
+import i18n from "../../i18n";
 import "@fontsource/poppins/400.css";
 import "@fontsource/poppins/600.css";
 import "@fontsource/poppins/700.css";

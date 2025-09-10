@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { topics } from "../data/topics";
+import { topics } from "../../data/topics";
 import { Tab } from "@headlessui/react";
 import { ArrowLeft, FileText, Video, HelpCircle } from "lucide-react";
 

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { auth, db } from "../firebase";
+import { auth, db } from "../../firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { X } from "lucide-react";
-import { cropCategories } from "../data/cropData";
+import { cropCategories } from "../../data/cropData";
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
