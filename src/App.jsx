@@ -39,10 +39,12 @@ import OfficerDashboard from "./pages/officer/OfficerDashboard";
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 
-// Public
+// Public Pages
 import LandingPage from "./pages/Landing";
 import AuthPage from "./pages/AuthPage";
 import Registration from "./pages/Registration";
+
+// Components
 import Layout from "./components/Layout";
 
 const App = () => {
@@ -69,19 +71,6 @@ const App = () => {
 
   if (loading) return <div>Loading...</div>;
 
-  const getDashboard = () => {
-    switch (role) {
-      case "farmer":
-        return <Layout role="farmer"><Dashboard /></Layout>;
-      case "officer":
-        return <Layout role="officer"><OfficerDashboard /></Layout>;
-      case "admin":
-        return <Layout role="admin"><AdminDashboard /></Layout>;
-      default:
-        return <Navigate to="/auth" />;
-    }
-  };
-
   return (
     <Routes>
       {/* Public Routes */}
@@ -89,10 +78,21 @@ const App = () => {
       <Route path="/auth" element={<AuthPage setUser={setUser} />} />
       <Route path="/register" element={<Registration />} />
 
-      {/* Protected Dashboard */}
+      {/* Protected Routes */}
       <Route
         path="/dashboard/*"
-        element={user && role ? getDashboard() : <Navigate to="/auth" />}
+        element={
+          user && role ? (
+            <Layout role={role}>
+              {/* Nested routing handled inside Layout */}
+              {role === "farmer" && <Dashboard />}
+              {role === "officer" && <OfficerDashboard />}
+              {role === "admin" && <AdminDashboard />}
+            </Layout>
+          ) : (
+            <Navigate to="/auth" />
+          )
+        }
       >
         {/* Farmer Routes */}
         {role === "farmer" && (
