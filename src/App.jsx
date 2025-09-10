@@ -45,6 +45,14 @@ import OfficerProfile from "./pages/officer/OfficerProfile";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminProfile from "./pages/admin/AdminProfile";
+import FarmerManagement from "./pages/admin/UserManagement";
+import OfficerManagement from "./pages/admin/UserManagement";
+import Settings from "./pages/admin/Settings";
+import UserManagement from "./pages/admin/UserManagement";
+
+
+
 
 // Public Pages
 import LandingPage from "./pages/Landing";
@@ -148,12 +156,17 @@ const App = () => {
           </>
         )}
 
-        {/* Admin Routes */}
-        {role === "admin" && (
-          <>
-            <Route index element={<AdminDashboard />} />
-          </>
-        )}
+       {/* Admin Routes */}
+      {role === "admin" && (
+        <>
+          <Route index element={<AdminDashboard />} />
+          <Route path="profile" element={<AdminProfile />} />
+          <Route path="user-management" element={<UserManagement />} />
+          <Route path="farmer-management" element={<FarmerManagement />} />
+          <Route path="officer-management" element={<OfficerManagement />} />
+          <Route path="settings" element={<Settings />} />
+        </>
+      )}
       </Route>
 
       {/* Fallback */}
