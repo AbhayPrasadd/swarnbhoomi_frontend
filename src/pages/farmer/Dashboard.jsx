@@ -32,7 +32,7 @@ const Dashboard = () => {
           setUserData(userSnap.data());
         }
       }
-      fetchWeatherData("Bhubaneswar"); // Always Bhubaneswar
+      fetchWeatherData("Bhubaneswar"); 
       setLoading(false);
     };
 
