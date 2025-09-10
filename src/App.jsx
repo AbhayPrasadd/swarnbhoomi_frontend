@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "./firebase";
@@ -43,14 +43,12 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import LandingPage from "./pages/Landing";
 import AuthPage from "./pages/AuthPage";
 import Registration from "./pages/Registration";
-
 import Layout from "./components/Layout";
 
 const App = () => {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
-  const location = useLocation();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -69,6 +67,8 @@ const App = () => {
     return () => unsubscribe();
   }, []);
 
+  if (loading) return <div>Loading...</div>;
+
   const getDashboard = () => {
     switch (role) {
       case "farmer":
@@ -82,23 +82,17 @@ const App = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-
   return (
     <Routes>
       {/* Public Routes */}
       <Route path="/" element={<LandingPage />} />
-      <Route path="/auth" element={<AuthPage />} />
+      <Route path="/auth" element={<AuthPage setUser={setUser} />} />
       <Route path="/register" element={<Registration />} />
 
       {/* Protected Dashboard */}
       <Route
         path="/dashboard/*"
-        element={
-          user && role
-            ? getDashboard()
-            : <Navigate to="/auth" state={{ from: location }} />
-        }
+        element={user && role ? getDashboard() : <Navigate to="/auth" />}
       >
         {/* Farmer Routes */}
         {role === "farmer" && (
@@ -138,7 +132,6 @@ const App = () => {
         {role === "officer" && (
           <>
             <Route index element={<OfficerDashboard />} />
-            {/* Add more officer-specific routes */}
           </>
         )}
 
@@ -146,11 +139,11 @@ const App = () => {
         {role === "admin" && (
           <>
             <Route index element={<AdminDashboard />} />
-            {/* Add more admin-specific routes */}
           </>
         )}
       </Route>
 
+      {/* Fallback */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
