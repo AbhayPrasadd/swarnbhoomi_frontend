@@ -35,6 +35,13 @@ import Others from "./pages/schemes/Others";
 
 // Officer Pages
 import OfficerDashboard from "./pages/officer/OfficerDashboard";
+import AdvisoryManagement from "./pages/officer/AdvisoryManagement";
+import Alerts from "./pages/officer/Alerts";
+import CropData from "./pages/officer/CropData";
+import FarmerQueries from "./pages/officer/FarmerQueries";
+import KnowledgeBase from "./pages/officer/KnowledgeBase";
+import ReportAnalytics from "./pages/officer/ReportAnalytics";
+import OfficerProfile from "./pages/officer/OfficerProfile";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -84,7 +91,6 @@ const App = () => {
         element={
           user && role ? (
             <Layout role={role}>
-              {/* Nested routing handled inside Layout */}
               {role === "farmer" && <Dashboard />}
               {role === "officer" && <OfficerDashboard />}
               {role === "admin" && <AdminDashboard />}
@@ -132,6 +138,13 @@ const App = () => {
         {role === "officer" && (
           <>
             <Route index element={<OfficerDashboard />} />
+            <Route path="advisory-management" element={<AdvisoryManagement />} />
+            <Route path="alerts" element={<Alerts />} />
+            <Route path="crop-data" element={<CropData />} />
+            <Route path="farmer-queries" element={<FarmerQueries />} />
+            <Route path="knowledge-base" element={<KnowledgeBase />} />
+            <Route path="reports-analytics" element={<ReportAnalytics />} />
+            <Route path="profile" element={<OfficerProfile />} />
           </>
         )}
 
