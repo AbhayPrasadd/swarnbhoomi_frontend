@@ -24,7 +24,8 @@ const Sidebar = ({ setIsSidebarOpen }) => {
       
       { name: t("Dashboard"), path: "/dashboard", icon: <Home size={20} /> },
       { name: t("Advisory"), path: "/dashboard/advisoryPage", icon: <UserCheck size={20} /> },
-      { name: t("Crop Health"), path: "/dashboard/crophealth", icon: <UserCheck size={20} /> },
+      //{ name: t("Crop Health"), path: "/dashboard/crophealth", icon: <UserCheck size={20} /> },
+      { name: t("Crop Doctor"), path: "/dashboard/cropdoctor", icon: <UserCheck size={20} /> },
       //{ name: t("Soil Health"), path: "/dashboard/soilAdvisory", icon: <UserCheck size={20} /> },
       { name: t("Mandi Price"), path: "/dashboard/mandiPage", icon: <BadgeIndianRupee size={20} /> },
       //{ name: t("Fpo Search"), path: "/dashboard/fpoPage", icon: <Users size={20} /> },

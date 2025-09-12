@@ -6,14 +6,15 @@ import { auth, db } from "./firebase";
 
 // Farmer Pages
 import Dashboard from "./pages/farmer/Dashboard";
+import AdvisoryPage from "./pages/farmer/AdvisoryPage";
+import SoilAdvisory from "./pages/farmer/SoilAdvisory";
+import CropDoctor from "./pages/farmer/CropDoctor";
 import MyCrop from "./pages/farmer/MyCrop";
 import VoiceBot from "./pages/farmer/VoiceBot";
 import Inventory from "./pages/farmer/Inventory";
 import Weather from "./pages/farmer/Weather";
 import ProfilePage from "./pages/farmer/ProfilePage";
-import AdvisoryPage from "./pages/farmer/AdvisoryPage";
 import AgroRentTab from "./pages/farmer/AgroRentTab";
-import SoilAdvisory from "./pages/farmer/SoilAdvisory";
 import CommunityPage from "./pages/farmer/CommunityPage";
 import Waste from "./pages/farmer/Waste";
 import FpoPage from "./pages/farmer/FpoPage";
@@ -26,6 +27,8 @@ import CommodityPrices from "./pages/farmer/CommodityPrices";
 import FarmingAlerts from "./pages/farmer/FarmingAlerts";
 import SchemesPage from "./pages/farmer/SchemesPage";
 import SchemesLayout from "./pages/farmer/SchemesLayout";
+
+// schemes pages 
 import Agriculture from "./pages/farmer/schemes/Agriculture";
 import Irrigation from "./pages/farmer/schemes/Irrigation";
 import Animal from "./pages/farmer/schemes/Animal";
@@ -114,6 +117,7 @@ const App = () => {
             <Route index element={<Dashboard />} />
             <Route path="advisoryPage" element={<AdvisoryPage />} />
             <Route path="SoilAdvisory" element={<SoilAdvisory />} />
+            <Route path="cropdoctor" element={<CropDoctor />} />
             <Route path="communityPage" element={<CommunityPage />} />
             <Route path="cropGuide" element={<MyCrop />} />
             <Route path="voiceBot" element={<VoiceBot />} />
